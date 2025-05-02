@@ -14,3 +14,11 @@ Este projeto consiste em um **Sistema de Gestão de Inventário** com as seguint
 - Processamento de encomendas e acompanhamento do seu cumprimento.
 - Interação com um servidor de base de dados para armazenar e recuperar dados de inventário.
 - Monitorização de compras e alertas de reabastecer stock.
+
+## Tipos de de Utilizadores
+
+| Tipo               | Descrição                                                                 | Permissões                                                                 |
+|--------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| **Administrador**  | Responsável pela gestão global do sistema.                                | - Criar/eliminar utilizadores<br>- Configurar categorias de produtos<br>- Acessar todos os relatórios |
+| **Funcionário**    | Utilizador operacional (armazém ou loja).                                | - Atualizar stock<br>- Registar encomendas<br>- Gerar relatórios básicos   |
+| **Fornecedor**     | Acesso externo para confirmar entregas.                                  | - Ver encomendas pendentes<br>- Confirmar entregas                         |
