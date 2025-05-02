@@ -1,5 +1,11 @@
 # DEAPC_Projeto
 
+## Membros do Grupo
+
+- [André Tavares, nº1222016]
+- [Fernando Martins, nº1232091]
+- [Tiago Magalhães, nº1241742]
+
 ## Objetivos da Aplicação
 
 Este projeto consiste em um **Sistema de Gestão de Inventário** com as seguintes funcionalidades:
