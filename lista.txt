@@ -1,0 +1,3 @@
+|	CLiente		|
+|  Código  |  Nome  |  Descrição  |  Prioridade  |
+|  CL01  |  Aceder à lista  |  Cliente quer aceder à lista  |  Alta  |
