@@ -15,7 +15,7 @@ Este projeto consiste em um **Sistema de Gestão de Inventário** com as seguint
 - Interação com um servidor de base de dados para armazenar e recuperar dados de inventário.
 - Monitorização de compras e alertas de reabastecer stock.
 
-## Tipos de de Utilizadores
+## Tipos de Utilizadores
 
 | Tipo               | Descrição                                                                 | Permissões                                                                 |
 |--------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------|
