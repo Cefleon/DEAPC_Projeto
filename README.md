@@ -28,10 +28,8 @@ Este projeto consiste em um **Sistema de Gestão de Inventário** com as seguint
 
 | Código             | Tipo               | Nome			| Descrição                                                                 | Prioridade
 |--------------------|--------------------|-----------------------------|---------------------------------------------------------------------------|--------------------------------
-| ADM01              | **Administrador**  | Aceder a toda a informação	| Pretende aceder à informação global do sistema, para proceder à gestão do mesmo.                                | Alta
-| ADM02              | **Administrador**  | Aceder a toda a informação  | Pretende aceder à informação global do sistema, para proceder à gestão do mes					  | Alta
-| USR01              | **Funcionário**    | Aceder a informação relativa a encomendas | Pretende efectuar processamento de encomendas, acompanhamento                                     | Média
-| USR02              | **Funcionário**    | Aceder a informação relativa a encomendas | Pretende efectuar processamento de encomendas, acompanhamento 					  | Média
-| USR03              | **Funcionário**    | Aceder a informação relativa a encomendas | Pretende efectuar processamento de encomendas, acompanhamento					  | Média 
-| DIS01              | **Fornecedor**     | Aceder a informação relativa a compras | Pretende efectuar processamento de compras				                                  | Baixa
-| DIS02              | **Fornecedor**     | Aceder a informação relativa a compras | Pretende efectuar processamento de compras								  | Baixa
+| ADM01              | **Administrador**  | Gerir Utilizadores	| Como Administrador, quero criar/editar/eliminar contas de utilizadores para controlar os acessos ao sistema.                                | Alta
+| ADM02              | **Administrador**  | Configurar Categorias  | Como Administrador, quero definir categorias de produtos para organizar o  inventário.					  | Médiia
+| ARM01              | **Funcionário**    | Atualizar Stock | Como Funcionário, quero ajustar manualmente as quantidades de produtos para manter o inventário atualizado.                                     | Alta
+| ARM02              | **Funcionário**    | Registar Encomendas | Como Funcionário, quero inserir novas encomendas de fornecedores para atualizar o stock. 					  | Alta
+| FOR01              | **Fornecedor**     | Confirmar Entregas | Como Fornecedor, quero marcar encomendas como entregues e enviar comprovativos para validação.				                                  | Alta
