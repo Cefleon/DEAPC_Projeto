@@ -22,3 +22,16 @@ Este projeto consiste em um **Sistema de Gestão de Inventário** com as seguint
 | **Administrador**  | Responsável pela gestão global do sistema.                                | - Criar/eliminar utilizadores<br>- Configurar categorias de produtos<br>- Acessar todos os relatórios |
 | **Funcionário**    | Utilizador operacional (armazém ou loja).                                | - Atualizar stock<br>- Registar encomendas<br>- Gerar relatórios básicos   |
 | **Fornecedor**     | Acesso externo para confirmar entregas.                                  | - Ver encomendas pendentes<br>- Confirmar entregas                         |
+
+
+## User Stories
+
+| Código             | Tipo               | Nome			| Descrição                                                                 | Prioridade
+|--------------------|--------------------|-----------------------------|---------------------------------------------------------------------------|--------------------------------
+| ADM01              | **Administrador**  | Aceder a toda a informação	| Pretende aceder à informação global do sistema, para proceder à gestão do mesmo.                                | Alta
+| ADM02              | **Administrador**  | Aceder a toda a informação  | Pretende aceder à informação global do sistema, para proceder à gestão do mes					  | Alta
+| USR01              | **Funcionário**    | Aceder a informação relativa a encomendas | Pretende efectuar processamento de encomendas, acompanhamento                                     | Média
+| USR02              | **Funcionário**    | Aceder a informação relativa a encomendas | Pretende efectuar processamento de encomendas, acompanhamento 					  | Média
+| USR03              | **Funcionário**    | Aceder a informação relativa a encomendas | Pretende efectuar processamento de encomendas, acompanhamento					  | Média 
+| DIS01              | **Fornecedor**     | Aceder a informação relativa a compras | Pretende efectuar processamento de compras				                                  | Baixa
+| DIS02              | **Fornecedor**     | Aceder a informação relativa a compras | Pretende efectuar processamento de compras								  | Baixa
