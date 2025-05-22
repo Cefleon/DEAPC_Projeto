@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concluir Entrega - DEAPC Inventory</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="logo.png" alt="DEAPC Inventory">
+                <h2>DEAPC Inventory</h2>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                    <li class="active"><a href="concluir-entrega.html"><i class="fas fa-check-circle"></i> <span>Concluir Entrega</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <img src="images/user-avatar.png" alt="Fornecedor">
+                <div>
+                    <span class="username">Fornecedor</span>
+                    <span class="user-role">Conta Fornecedor</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <h1><i class="fas fa-check-circle"></i> Concluir Entrega</h1>
+            
+            <form action="dashboard.html" method="get" class="delivery-form">
+                <div class="form-group">
+                    <label for="company"><i class="fas fa-building"></i> Nome da Companhia</label>
+                    <input type="text" id="company" name="company" required>
+                </div>
+                
+                <div class="products-table">
+                    <h2><i class="fas fa-boxes"></i> Produtos Entregues</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Data de Entrega</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" name="product1" required></td>
+                                <td><input type="date" name="date1" required></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="product2"></td>
+                                <td><input type="date" name="date2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="form-footer">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check"></i> Validar Entrega
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
