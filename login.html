@@ -10,13 +10,13 @@
     <div class="login-wrapper">
         <div class="login-container">
             <img src="images/logo.jpg" alt="Logo" class="logo">
-            <form>
+            <form action="/scripts/login.php" method="POST">
                 <h1>Login</h1>
                 <label for="email">Email:</label>
-                <input type="email" id="email" placeholder="exemplo@dominio.com" required>
+                <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" required>
                 
                 <label for="password">Password:</label>
-                <input type="password" id="password" placeholder="Introduza a password" required>
+                <input type="password" id="password" name="password" placeholder="Introduza a password" required>
                 
                 <button type="submit" class="login-btn">Entrar</button>
             </form>
