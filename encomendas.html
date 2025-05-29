@@ -33,51 +33,75 @@
 
         <!-- Main Content -->
         <main class="main-content">
-
-	<h2><i class="fas fa-check-circle"></i> Atualizar Entregas</h2>            
-            <form action="dashboard.html" method="get" class="delivery-form">
+        <h2><i class="fas fa-check-circle"></i> Atualizar Entregas</h2>
+            <form action="encomendas.html" method="get" class="delivery-form">
                 <div class="form-group">
                     <label for="company"><i class="fas fa-building"></i> Nome da Companhia</label>
                     <input type="text" id="company" name="company" required>
-		    <div class="form-footer">
+                    <div class="form-footer">
                       <button type="submit" class="submit-btn">
                         <i class="fas fa-check"></i> Pesquisa
-		      </button>
-           	    </div>
+                      </button>
+                    </div>
                 </div>
-                  
+            </form>  
             <!-- Seção Tabela -->
+            <form action="scripts/func_encomendas.php" method="post" id="encomendasForm">
             <section class="report-section">
                 <h2><i class="fas fa-table"></i> Atualização de encomendas</h2>
                 <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tipo de Encomenda</th>
-                                <th>Quantidade</th>
-				<th>Dia</th>
-				<th>Selecionar</th>
-                            </tr>
-                        </thead>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Tipo de Encomenda</th>
+                      <th>Quantidade</th>
+				              <th>Dia</th>
+				              <th>Selecionar</th>
+                    </tr>
+                      </thead>
                         <tbody>
-                            <tr>
-                                <td>Tazos</td>
-				<td>127</td>
-				<td>03-12-2008</td>
-				<td class="checkbox-cell"> <input type="checkbox" class="confirmar-encomenda"></td>
-			    </tr>
-			    <tr>
-                                <td>Chinelos</td>
-                                <td>56</td>
-                                <td>24-05-2015</td>
-                                <td class="checkbox-cell"> <input type="checkbox" class="confirmar-encomenda"></td>
-			    </tr>
-                            <tr>    
-				<td>Carapins</td>
-                                <td>25</td>
-                                <td>13-05-1997</td>
-                                <td class="checkbox-cell"> <input type="checkbox" class="confirmar-encomenda"></td>
-			    </tr>
+                          <tr>
+                            <td>Tazos
+				                      <input type="hidden" name="tipo[]" value="Tazos">
+				                    </td>
+				                    <td>127
+				                      <input type="hidden" name="quantidade[]" value="127">
+				                    </td>
+				                    <td>03-12-2008
+				                      <input type="hidden" name="dia[]" value="03-12-2008">
+				                    </td>
+				                    <td class="checkbox-cell">
+				                      <input type="checkbox" name="encomenda[]" class="confirmar-encomenda">
+				                    </td>
+			                    </tr>
+			                    <tr>
+                            <td>Chinelos
+				                      <input type="hidden" name="tipo[]" value="Chinelos">
+				                    </td>
+                            <td>56
+				                      <input type="hidden" name="quantidade[]" value="56">
+				                    </td>
+                            <td>24-05-2015
+				                      <input type="hidden" name="dia[]" value="24-05-2015">
+				                    </td>
+                            <td class="checkbox-cell">
+				                      <input type="checkbox" name="encomenda[]" class="confirmar-encomenda">
+				                    </td>
+			                    </tr>
+                          <tr>    
+				                    <td>Carapins
+				                      <input type="hidden" name="tipo[]" value="Carapins">
+				                    </td>
+                            <td>25
+				                      <input type="hidden" name="quantidade[]" value="25">
+				                    </td>
+                            <td>13-05-1997
+				                      <input type="hidden" name="dia[]" value="13-05-1997">
+				                    </td>
+                            <td class="checkbox-cell">
+				                      <input type="checkbox"name="encomenda[]" class="confirmar-encomenda">
+				                    </td>
+			                    </tr>
                         </tbody>
                     </table>
                 </div>
