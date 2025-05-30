@@ -95,7 +95,7 @@ else {
                 <ul>
 		    <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                     <li><a href="stock.php"><i class="fas fa-boxes"></i> Stock</a></li>
-		    <li class="active"><a href="#"><i class="fas fa-truck"></i> Entregas</a></li>
+		    <li class="active"><a href="#"><i class="fas fa-truck"></i> Encomendas</a></li>
                 </ul>
             </nav>
             <div class="user-profile">
@@ -109,7 +109,7 @@ else {
 
         <!-- Main Content -->
         <main class="main-content">
-        <h2><i class="fas fa-check-circle"></i> Atualizar Entregas</h2>
+        <h2><i class="fas fa-check-circle"></i> Atualizar Encomendas</h2>
             <form action="encomendas.php" method="get" class="delivery-form">
                 <div class="form-group">
                     <label for="company"><i class="fas fa-building"></i> Nome da Companhia</label>
@@ -122,14 +122,14 @@ else {
                 </div>
             </form>
             <!-- Seção Tabela -->
-            <form action="encomendas.php" method="post" id="entregasForm">
+            <form action="encomendas.php" method="post" id="encomendasForm">
             <section class="report-section">
-                <h2><i class="fas fa-table"></i> Atualização de Entregas</h2>
+                <h2><i class="fas fa-table"></i> Atualização de Encomendas</h2>
                 <div class="table-container">
                 <table>
                   <thead>
                     <tr>
-                      <th>Tipo de Entrega</th>
+                      <th>Tipo de Encomenda</th>
                       <th>Quantidade</th>
 				              <th>Dia</th>
 				              <th>Selecionar</th>
