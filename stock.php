@@ -1,3 +1,63 @@
+<?php
+
+// Informação sobre erros na execução do script
+
+  error_reporting(E_ALL);
+  ini_set('display_errors' , 1);
+
+// Método de request e leitura de dados da página stock
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+  try{
+    // Conexão com o SQLite
+    $database = new SQLite3('/var/www/html/public_html/data/stock.db');
+    
+    // Verifica se a conexão foi estabelecida
+    if (!$database) {
+        die("Erro ao conectar ao banco de dados. ");
+    }
+
+    // Cria a tabela se não existir
+    $createTable = "CREATE TABLE IF NOT EXISTS AtualizaStock (
+                    Produto TEXT PRIMARY KEY,
+                    Quantidade INTEGER NOT NULL
+                    )";
+                    
+    if (!$database->exec($createTable)) {
+    	die("Erro ao criar tabela: " . $database->lastErrorMsg());
+    }
+    
+    // Processamento dos dados (versão simplificada e segura)
+        $produtos = [
+             'Carnes' => isset($_POST['Carnes']) ? max(0, intval($_POST['Carnes'])) : 0,
+            'Peixes' => isset($_POST['Peixes']) ? max(0, intval($_POST['Peixes'])) : 0,
+            'Frutas' => isset($_POST['Frutas']) ? max(0, intval($_POST['Frutas'])) : 0,
+            'Congelados' => isset($_POST['Congelados']) ? max(0, intval($_POST['Congelados'])) : 0
+            ];
+
+        // Operação de atualização
+        $stmt = $database->prepare("
+            INSERT OR REPLACE INTO AtualizaStock (Produto, Quantidade)
+            VALUES (:produto, :quantidade)
+        ");
+        
+        foreach ($produtos as $produto => $quantidade) {
+            $stmt->bindValue(':produto', $produto, SQLITE3_TEXT);
+            $stmt->bindValue(':quantidade', $quantidade, SQLITE3_INTEGER);
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao atualizar stock para $produto.");
+            }
+        }
+
+        header('Location: stock.php?status=success');
+        exit;
+        
+  } catch (Exception $e) {
+        die("Erro no sistema: " . $e->getMessage());
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -17,9 +77,9 @@
             </div>
             <nav class="menu">
                 <ul>
-                    <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                     <li class="active"><a href="#"><i class="fas fa-boxes"></i> Stock</a></li>
-		    <li><a href="encomendas.html"><i class="fas fa-truck"></i> Encomendas</a></li>
+		    <li><a href="encomendas.php"><i class="fas fa-truck"></i> Encomendas</a></li>
                 </ul>
             </nav>
             <div class="user-profile">
@@ -37,11 +97,8 @@
             <!-- Seção Tabela -->
             <section class="report-section">
                 <h2><i class="fas fa-table"></i> Atualização de stock</h2>
-<<<<<<< HEAD
-                <form action="scripts/stock.php" method="post" id="stockForm">
+                <form action="stock.php" method="post" id="stockForm">
 		  <div class="table-container">
-
-                <div class="table-container">
                     <table>
                         <thead>
                             <tr>
@@ -52,7 +109,6 @@
                         <tbody>
                             <tr>
                                 <td>Carnes</td>
-<<<<<<< HEAD
 				<td><input type="number" name="Carnes" value="40" min="0"></td>
 			    </tr>
 			    <tr>
@@ -70,23 +126,6 @@
                         </tbody>
                     </table>
                   </div>
-				<td><input type="number" value="40" min="0"></td>
-			    </tr>
-			    <tr>
-                                <td>Peixes</td>
-				<td><input type="number" value="4" min="0"></td>
-			    </tr>
-                            <tr>    
-				<td>Frutas</td>
-				<td><input type="number" value="90" min="0"></td>
-			    </tr>
-			    <tr>
-                                <td>Congelados</td>
-				<td><input type="number" value="258" min="0"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </section>
 	  <div id="data-hora">20-05-2025, 17:33:48 Sex
 	  </div>
@@ -95,7 +134,6 @@
                 <i class="fas fa-check"></i> Atualizar
              </button>
           </div>
-<<<<<<< HEAD
 	</form>
         </main>
     </div>

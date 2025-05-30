@@ -1,0 +1,36 @@
+=== STOCK ATUALIZADO ===
+Data: 29-05-2025 11:37:33
+
+Carnes: 0
+Peixes: 0
+Frutas: 0
+Congelados: 0
+=======================
+
+=== STOCK ATUALIZADO ===
+Data: 29-05-2025 12:39:59
+
+Carnes: 120
+Peixes: 54
+Frutas: 20
+Congelados: 5
+=======================
+
+=== STOCK ATUALIZADO ===
+Data: 29-05-2025 16:33:08
+
+Carnes: 30
+Peixes: 4
+Frutas: 50
+Congelados: 258
+=======================
+
+=== STOCK ATUALIZADO ===
+Data: 30-05-2025 09:56:26
+
+Carnes: 120
+Peixes: 4
+Frutas: 90
+Congelados: 258
+=======================
+
