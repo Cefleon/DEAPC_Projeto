@@ -6,88 +6,55 @@
   ini_set('display_errors' , 1);
 
 // Método de request e leitura de dados da página stock
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $carnes = isset($_POST['Carnes']);
-	if ($carnes != NULL){
-	  $carnes = intval($_POST['Carnes']);
-	}
-	else{
-	  $carnes = 0;
-	}
-
-    $peixes = isset($_POST['Peixes']);
-	if ($peixes != NULL){
-          $peixes = intval($_POST['Peixes']);
-        }
-        else{
-          $peixes = 0;
-        }
-
-    $frutas = isset($_POST['Frutas']);
-	if ($frutas != NULL){
-          $frutas = intval($_POST['Frutas']);
-        }
-        else{
-          $frutas = 0;
-        }
-
-    $congelados = isset($_POST['Congelados']);
-	if ($congelados != NULL){
-          $congelados = intval($_POST['Congelados']);
-        }
-        else{
-          $congelados = 0;
-        }
-
-    // Validação de quantidades positivas
-    if ($carnes < 0 || $peixes < 0 || $frutas < 0 || $congelados < 0) {
-        die("Erro: Quantidades não podem ser negativas.");
+  try{
+    // Conexão com o SQLite
+    $database = new SQLite3('/var/www/html/public_html/data/stock.db');
+    
+    // Verifica se a conexão foi estabelecida
+    if (!$database) {
+        die("Erro ao conectar ao banco de dados. ");
     }
 
-    // Criação de arquivo TXT
-    $dados = "=== STOCK ATUALIZADO ===\n";
-    $dados .= "Data: " . date('d-m-Y H:i:s') . "\n\n";
-    $dados .= "Carnes: $carnes\n";
-    $dados .= "Peixes: $peixes\n";
-    $dados .= "Frutas: $frutas\n";
-    $dados .= "Congelados: $congelados\n";
-    $dados .= "=======================\n\n";
-
-    // Caminho do arquivo
-    $arquivo = '/var/www/html/public_html/data/stock.txt';
-
-    // Verifica se ficheiro existe ou precisa ser criado
-    if (file_exists($arquivo)){
-	if (($file = fopen($arquivo, "a")) == NULL){
-	   printf("Erro na abertura do ficheiro!!\n");
-	   return 1;
-	}
+    // Cria a tabela se não existir
+    $createTable = "CREATE TABLE IF NOT EXISTS AtualizaStock (
+                    Produto TEXT PRIMARY KEY,
+                    Quantidade INTEGER NOT NULL
+                    )";
+                    
+    if (!$database->exec($createTable)) {
+    	die("Erro ao criar tabela: " . $database->lastErrorMsg());
     }
-    else{
-	if(($file = fopen($arquivo, "w")) == NULL){
-	   printf("Erro na criação do ficheiro!!\n");
-           return 1;
-	}
+    
+    // Processamento dos dados (versão simplificada e segura)
+        $produtos = [
+             'Carnes' => isset($_POST['Carnes']) ? max(0, intval($_POST['Carnes'])) : 0,
+            'Peixes' => isset($_POST['Peixes']) ? max(0, intval($_POST['Peixes'])) : 0,
+            'Frutas' => isset($_POST['Frutas']) ? max(0, intval($_POST['Frutas'])) : 0,
+            'Congelados' => isset($_POST['Congelados']) ? max(0, intval($_POST['Congelados'])) : 0
+            ];
+
+        // Operação de atualização
+        $stmt = $database->prepare("
+            INSERT OR REPLACE INTO AtualizaStock (Produto, Quantidade)
+            VALUES (:produto, :quantidade)
+        ");
+        
+        foreach ($produtos as $produto => $quantidade) {
+            $stmt->bindValue(':produto', $produto, SQLITE3_TEXT);
+            $stmt->bindValue(':quantidade', $quantidade, SQLITE3_INTEGER);
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao atualizar stock para $produto.");
+            }
+        }
+
+        header('Location: stock.php?status=success');
+        exit;
+        
+  } catch (Exception $e) {
+        die("Erro no sistema: " . $e->getMessage());
     }
-
-    if (fwrite($file, $dados) == NULL){
-	fclose($file);
-	printf("Erro na escrita do ficheiro!!\n");
-        return 1;
-    }
-
-    fclose($file);
-
-    // Redireciona com mensagem de sucesso
-    header('Location: /public_html/stock.php?status=success');
-    exit;
-}
-else {
-    // Se não for POST, redireciona
-    //header('Location: /public_html/stock.php');
-    //exit;
 }
 ?>
 

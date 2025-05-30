@@ -3,74 +3,50 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Processar encomendas selecionadas
-    $encomendas = [];
+// Conexão com o banco de dados
+$db_pedidos = new SQLite3('/var/www/html/public_html/data/pedidos.db');
+$db_encomendas = new SQLite3('/var/www/html/public_html/data/encomendas.db');
 
-    // Verificar quais encomendas foram selecionadas
-    if (isset($_POST['encomenda'])) {
-        foreach ($_POST['encomenda'] as $index => $selected) {
-            if ($selected === 'on') {  // Checkbox marcado
-                $tipo = $_POST['tipo'][$index] ?? 'Desconhecido';
-                $quantidade = $_POST['quantidade'][$index] ?? 0;
-                $dia = $_POST['dia'][$index] ?? 'Data não especificada';
-
-                $encomendas[] = [
-                    'tipo' => $tipo,
-                    'quantidade' => $quantidade,
-                    'dia' => $dia
-                ];
-            }
-        }
+// Processar pesquisa por empresa
+$encomendas = [];
+$empresa_pesquisada = '';
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['company'])) {
+    $empresa_pesquisada = SQLite3::escapeString($_GET['company']);
+    $result = $db_pedidos->query("SELECT * FROM ListaEncomenda WHERE Companhia LIKE '%$empresa_pesquisada%'");
+    
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $encomendas[] = $row;
     }
-
-    // Criar conteúdo do arquivo
-    $dados = "=== ENCOMENDAS ATUALIZADAS ===\n";
-    $dados .= "Data da atualização: " . date('d-m-Y H:i:s') . "\n\n";
-
-    foreach ($encomendas as $encomenda) {
-        $dados .= "Tipo: " . $encomenda['tipo'] . "\n";
-        $dados .= "Quantidade: " . $encomenda['quantidade'] . "\n";
-        $dados .= "Dia: " . $encomenda['dia'] . "\n";
-        $dados .= "--------------------------\n";
-    }
-
-    $dados .= "=======================\n\n";
-
-    // Caminho do arquivo
-    $arquivo = '/var/www/html/public_html/data/encomendas.txt';
-
-    // Verifica se ficheiro existe ou precisa ser criado
-    if (file_exists($arquivo)){
-        if (($file = fopen($arquivo, "a")) == NULL){
-           printf("Erro na abertura do ficheiro!!\n");
-           return 1;
-        }
-    }
-    else{
-        if(($file = fopen($arquivo, "w")) == NULL){
-           printf("Erro na criação do ficheiro!!\n");
-           return 1;
-        }
-    }
-
-    if (fwrite($file, $dados) == NULL){
-        fclose($file);
-        printf("Erro na escrita do ficheiro!!\n");
-        return 1;
-    }
-
-    fclose($file);
-
-    // Redirecionar com mensagem de sucesso
-    header('Location: /public_html/encomendas.php?status=success');
-    exit;
 }
 
-else {
-    // Se acessado diretamente, redirecionar
-    //header('Location: /public_html/encomendas.php');
-    //exit;
+// Processar atualização de encomendas
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['encomenda'])) {
+        
+        // Inserir encomendas selecionadas
+        $stmt = $db_encomendas->prepare("
+            INSERT INTO AtualizaEncomenda 
+            (Tipo, Quantidade, Dia)
+            VALUES (:tipo, :quantidade, :dia)
+        ");
+        
+        // Verificar cada checkbox
+        foreach ($_POST['tipo'] as $index => $tipo) {
+            // Verifica se o checkbox correspondente foi marcado
+            if (isset($_POST['encomenda'][$index]) && $_POST['encomenda'][$index] === 'on') {
+                $stmt->bindValue(':tipo', $tipo, SQLITE3_TEXT);
+                $stmt->bindValue(':quantidade', $_POST['quantidade'][$index], SQLITE3_INTEGER);
+                $stmt->bindValue(':dia', $_POST['dia'][$index], SQLITE3_TEXT);
+                
+                if (!$stmt->execute()) {
+                    die("Erro ao inserir encomenda: " . $db_encomendas->lastErrorMsg());
+                }
+            }
+        }
+        
+        header('Location: encomendas.php?status=success&company='.urlencode($_GET['company']));
+        exit;
+    }
 }
 ?>
 
@@ -113,7 +89,7 @@ else {
             <form action="encomendas.php" method="get" class="delivery-form">
                 <div class="form-group">
                     <label for="company"><i class="fas fa-building"></i> Nome da Companhia</label>
-                    <input type="text" id="company" name="company" required>
+                    <input type="text" id="company" name="company" value="<?= htmlspecialchars ($empresa_pesquisada)?>" required>
                     <div class="form-footer">
                       <button type="submit" class="submit-btn">
                         <i class="fas fa-check"></i> Pesquisa
@@ -122,9 +98,10 @@ else {
                 </div>
             </form>
             <!-- Seção Tabela -->
+            <?php if(!empty($encomendas)): ?>
             <form action="encomendas.php" method="post" id="encomendasForm">
             <section class="report-section">
-                <h2><i class="fas fa-table"></i> Atualização de Encomendas</h2>
+                <h2><i class="fas fa-table"></i> Encomendas <?= htmlspecialchars($empresa_pesquisada)?></h2>
                 <div class="table-container">
                 <table>
                   <thead>
@@ -136,48 +113,22 @@ else {
                     </tr>
                       </thead>
                         <tbody>
-                          <tr>
-                            <td>Tazos
-				                      <input type="hidden" name="tipo[]" value="Tazos">
-				                    </td>
-				                    <td>127
-				                      <input type="hidden" name="quantidade[]" value="127">
-				                    </td>
-				                    <td>03-12-2008
-				                      <input type="hidden" name="dia[]" value="03-12-2008">
-				                    </td>
-				                    <td class="checkbox-cell">
-				                      <input type="checkbox" name="encomenda[]" class="confirmar-encomenda">
-				                    </td>
-			                    </tr>
-			                    <tr>
-                            <td>Chinelos
-				                      <input type="hidden" name="tipo[]" value="Chinelos">
-				                    </td>
-                            <td>56
-				                      <input type="hidden" name="quantidade[]" value="56">
-				                    </td>
-                            <td>24-05-2015
-				                      <input type="hidden" name="dia[]" value="24-05-2015">
-				                    </td>
-                            <td class="checkbox-cell">
-				                      <input type="checkbox" name="encomenda[]" class="confirmar-encomenda">
-				                    </td>
-			                    </tr>
-                          <tr>    
-				                    <td>Carapins
-				                      <input type="hidden" name="tipo[]" value="Carapins">
-				                    </td>
-                            <td>25
-				                      <input type="hidden" name="quantidade[]" value="25">
-				                    </td>
-                            <td>13-05-1997
-				                      <input type="hidden" name="dia[]" value="13-05-1997">
-				                    </td>
-                            <td class="checkbox-cell">
-				                      <input type="checkbox"name="encomenda[]" class="confirmar-encomenda">
-				                    </td>
-			                    </tr>
+                          <?php foreach ($encomendas as $index => $encomenda): ?>
+<tr>
+    <td><?= htmlspecialchars($encomenda['Tipo']) ?>
+        <input type="hidden" name="tipo[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Tipo']) ?>">
+    </td>
+    <td><?= htmlspecialchars($encomenda['Quantidade']) ?>
+        <input type="hidden" name="quantidade[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Quantidade']) ?>">
+    </td>
+    <td><?= htmlspecialchars($encomenda['Dia']) ?>
+        <input type="hidden" name="dia[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Dia']) ?>">
+    </td>
+    <td class="checkbox-cell">
+        <input type="checkbox" name="encomenda[<?= $index ?>]" value="on" class="confirmar-encomenda">
+    </td>
+</tr>
+<?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -190,6 +141,9 @@ else {
               </button>
            </div>
          </form>
+           <?php elseif (isset($_GET['company'])): ?>
+                <p class="no-results">Nenhuma encomenda encontrada para "<?= htmlspecialchars($_GET['company']) ?>"</p>
+            <?php endif; ?>
         </main>
     </div>
 </body>
