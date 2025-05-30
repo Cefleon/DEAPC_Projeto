@@ -25,3 +25,12 @@ Frutas: 50
 Congelados: 258
 =======================
 
+=== STOCK ATUALIZADO ===
+Data: 30-05-2025 09:56:26
+
+Carnes: 120
+Peixes: 4
+Frutas: 90
+Congelados: 258
+=======================
+
