@@ -272,3 +272,22 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+.pagination {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.page-btn {
+    display: inline-block;
+    margin: 0 0.5rem;
+    padding: 0.4rem 1rem;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.page-btn:hover {
+    background-color: #2980b9;
+}
