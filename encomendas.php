@@ -98,7 +98,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </form>
             <!-- Seção Tabela -->
-            <?php if(!empty($encomendas)): ?>
+            <?php if(empty($encomendas)): ?>
+            <form action="encomendas.php" method="post" id="encomendasForm">
+            <section class="report-section">
+                <h2><i class="fas fa-table"></i> Encomendas </h2>
+                <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Tipo de Encomenda</th>
+                      <th>Quantidade</th>
+				              <th>Dia</th>
+				              <th>Selecionar</th>
+                    </tr>
+                      </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+	   <div id="data-hora">20-05-2025, 17:33:48 Sex
+           </div>
+           <div class="form-footer">
+              <button type="submit" class="submit-btn">
+                 <i class="fas fa-check"></i> Atualizar
+              </button>
+           </div>
+         </form>
+            <?php elseif(!empty($encomendas)): ?>
             <form action="encomendas.php" method="post" id="encomendasForm">
             <section class="report-section">
                 <h2><i class="fas fa-table"></i> Encomendas <?= htmlspecialchars($empresa_pesquisada)?></h2>
@@ -142,7 +169,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            </div>
          </form>
            <?php elseif (isset($_GET['company'])): ?>
-                <p class="no-results">Nenhuma encomenda encontrada para "<?= htmlspecialchars($_GET['company']) ?>"</p>
+           <form action="encomendas.php" method="post" id="encomendasForm">
+            <section class="report-section">
+                <h2><i class="fas fa-table"></i> Encomendas </h2>
+                <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Tipo de Encomenda</th>
+                      <th>Quantidade</th>
+				              <th>Dia</th>
+				              <th>Selecionar</th>
+                    </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                        <th><p class="no-results">Nenhuma encomenda encontrada para "<?= htmlspecialchars($_GET['company']) ?>"</p></th>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </section>
+	   <div id="data-hora">20-05-2025, 17:33:48 Sex
+           </div>
+           <div class="form-footer">
+              <button type="submit" class="submit-btn">
+                 <i class="fas fa-check"></i> Atualizar
+              </button>
+           </div>
+         </form>
             <?php endif; ?>
         </main>
     </div>
