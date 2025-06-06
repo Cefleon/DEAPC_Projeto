@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } else {
         $_SESSION['erro_login'] = "Credenciais inválidas.";
+         echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($_SESSION['erro_login']) . '</div>';
+
     }
 }
 ?>
@@ -60,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sistema de Inventário</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/login.css">
 </head>
 <body>
@@ -76,7 +79,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <button type="submit" class="login-btn">Entrar</button>
             </form>
+            
+            <div class="text-center mt-4">
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#projetoModal">
+                    Sobre o Projeto
+                </button>
+            </div>
+</div>
+
+<!--Sobre o Projeto -->
+        <div class="modal fade" id="projetoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Descrição do Projeto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Este projeto consiste em um Sistema de Gestão de Inventário com as seguintes funcionalidades:
+                <ul>
+                    <li>Gestão de níveis de stock em tempo real.</li>
+                    <li>Processamento de encomendas e acompanhamento do seu cumprimento.</li>
+                    <li>Interação com um servidor de base de dados para armazenar e recuperar dados de inventário.</li>
+                    <li>Monitorização de compras e alertas de reabastecer stock.</li>
+                </ul>
+                </p>
+
+                <h6>Elementos do Grupo</h6>
+                <ul>
+                    <li>[André Tavares, nº1222016]</li>
+                    <li>[Fernando Martins, nº1232091]</li>
+                    <li>[Tiago Magalhães, nº1241742]</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+            
         </div>
     </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
