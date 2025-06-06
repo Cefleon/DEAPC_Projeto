@@ -1,3 +1,77 @@
+<?php
+// Ativar exibição de erros
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Conexão com os bancos de dados
+$db_stock = new SQLite3('/var/www/html/public_html/data/stock.db');
+$db_encomendas = new SQLite3('/var/www/html/public_html/data/encomendas.db');
+$db_stock_critico = new SQLite3('/var/www/html/public_html/data/StockCritico.db');
+$db_encomendas_urgentes = new SQLite3('/var/www/html/public_html/data/EncomendasUrgentes.db');
+
+// Definir valores ótimos para cada produto
+$valores_otimos = [
+    'Carnes' => 100,
+    'Peixes' => 50,
+    'Frutas' => 200,
+    'Congelados' => 300
+];
+
+// Processar stock crítico
+$stock_critico = [];
+$result_stock = $db_stock->query("SELECT * FROM AtualizaStock");
+
+while ($row = $result_stock->fetchArray(SQLITE3_ASSOC)) {
+    $produto = $row['Produto'];
+    $quantidade = $row['Quantidade'];
+    $valor_otimo = $valores_otimos[$produto] ?? 100; // Valor padrão se não definido
+    
+    $percentual = round(($quantidade / $valor_otimo) * 100);
+    
+    // Se o stock estiver abaixo de 10% do valor ótimo
+    if ($percentual < 10) {
+        $stock_critico[] = [
+            'Produto' => $produto,
+            'Quantidade' => $quantidade,
+            'Percentual' => $percentual
+        ];
+        
+        // Inserir no banco de dados StockCritico.db se ainda não existir
+        $check = $db_stock_critico->querySingle("SELECT COUNT(*) FROM StockCritico WHERE Produto = '$produto' AND Percentual = $percentual");
+        if ($check == 0) {
+            $db_stock_critico->exec("INSERT INTO StockCritico (Produto, Quantidade, Percentual) VALUES ('$produto', $quantidade, $percentual)");
+        }
+    }
+}
+
+// Processar encomendas urgentes (com atraso de até 5 dias)
+$encomendas_urgentes = [];
+$result_encomendas = $db_encomendas->query("SELECT * FROM AtualizaEncomenda");
+
+while ($row = $result_encomendas->fetchArray(SQLITE3_ASSOC)) {
+    $dia_encomenda = strtotime($row['Dia']);
+    $hoje = strtotime('today');
+    $dias_atraso = ($hoje - $dia_encomenda) / (60 * 60 * 24);
+    
+    // Se a encomenda estiver atrasada até 5 dias
+    if ($dias_atraso > 0 && $dias_atraso <= 5) {
+        $encomendas_urgentes[] = [
+            'Companhia' => $row['Companhia'],
+            'Produto' => $row['Tipo'],
+            'Quantidade' => $row['Quantidade'],
+            'Dia' => $row['Dia'],
+            'DiasAtraso' => floor($dias_atraso)
+        ];
+        
+        // Inserir no banco de dados EncomendasUrgentes.db se ainda não existir
+        $check = $db_encomendas_urgentes->querySingle("SELECT COUNT(*) FROM EncomendasUrgentes WHERE Companhia = '{$row['Companhia']}' AND Produto = '{$row['Tipo']}' AND Dia = '{$row['Dia']}'");
+        if ($check == 0) {
+            $db_encomendas_urgentes->exec("INSERT INTO EncomendasUrgentes (Companhia, Produto, Quantidade, Dia, DiasAtraso) VALUES ('{$row['Companhia']}', '{$row['Tipo']}', {$row['Quantidade']}, '{$row['Dia']}', $dias_atraso)");
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -33,82 +107,78 @@
 
         <!-- Main Content -->
         <main class="main-content">
-                  
-            <!-- Seção Tabela -->
+            <!-- Seção Tabela Stock Crítico -->
             <section class="report-section">
                 <h2><i class="fas fa-table"></i> Stock Crítico</h2>
-                <div class="table-container">
+                <div class="table-scroll-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>Nome</th>
-                                <th>Ficheiro</th>
-                                <th>Categoria</th>
-                                <th>Responsável</th>
-				<th>Status</th>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Percentual</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Nozes</td>
-                                <td>PDF</td>
-                                <td>CC</td>
-                                <td>Tiago</td>
-				<td>Enviado</td>
-                            </tr>
-                            <tr>
-                                <td>Arroz Basmati</td>
-                                <td>DOCX</td>
-                                <td>Consumível</td>
-                                <td>Albertino</td>
-                                <td>Em Falta - Prioritário</td>
-			     <tr>
-				<td>Papel higiénico</td>
-                                <td>CSV</td>
-                                <td>Premium</td>
-                                <td>Gervásio</td>
-                                <td>A 30% do stock - Atenção</td>
-			     </tr>
+                            <?php if (!empty($stock_critico)): ?>
+				    <?php 
+				    // Limitar a exibição a 5 itens (o scroll cuidará do resto)
+				    $display_items = array_slice($stock_critico, 0, 5);
+				    foreach ($display_items as $item): ?>
+					<tr>
+					    <td><?= htmlspecialchars($item['Produto']) ?></td>
+					    <td><?= htmlspecialchars($item['Quantidade']) ?></td>
+					    <td><?= htmlspecialchars($item['Percentual']) ?>%</td>
+					    <td class="<?= $item['Percentual'] < 5 ? 'status-critical' : 'status-warning' ?>">
+					        <?= $item['Percentual'] < 5 ? 'Crítico' : 'Atenção' ?>
+					    </td>
+					</tr>
+			    <?php endforeach; ?>
+                	    <?php else: ?>
+                    		<tr>
+                        		<td colspan="4" class="no-results">Nenhum stock crítico encontrado</td>
+                    		</tr>
+                	    <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </section>
-	    <section class="report-section">
+            
+            <!-- Seção Tabela Encomendas Urgentes -->
+            <section class="report-section">
                 <h2><i class="fas fa-table"></i> Encomendas Urgentes</h2>
-                <div class="table-container">
+                <div class="table-scroll-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>Nome</th>
-                                <th>Ficheiro</th>
-                                <th>Categoria</th>
-                                <th>Responsável</th>
-				<th>Status</th>
+                                <th>Companhia</th>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Dia Previsto</th>
+                                <th>Dias de Atraso</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Nozes</td>
-                                <td>PDF</td>
-                                <td>CC</td>
-                                <td>Tiago</td>
-				<td>Enviado</td>
-                            </tr>
-                            <tr>
-                                <td>Arroz Basmati</td>
-                                <td>DOCX</td>
-                                <td>Consumível</td>
-                                <td>Albertino</td>
-                                <td>Em Falta - Prioritário</td>
-			     <tr>
-				<td>Papel higiénico</td>
-                                <td>CSV</td>
-                                <td>Premium</td>
-                                <td>Gervásio</td>
-                                <td>A 30% do stock - Atenção</td>
-			     </tr>
+	                    <?php if (!empty($encomendas_urgentes)): ?>
+				    <?php foreach ($encomendas_urgentes as $encomenda): ?>
+					<tr>
+					    <td><?= htmlspecialchars($encomenda['Companhia']) ?></td>
+					    <td><?= htmlspecialchars($encomenda['Produto']) ?></td>
+					    <td><?= htmlspecialchars($encomenda['Quantidade']) ?></td>
+					    <td><?= htmlspecialchars($encomenda['Dia']) ?></td>
+					    <td><?= htmlspecialchars($encomenda['DiasAtraso']) ?></td>
+					    <td class="status-urgent">Urgente</td>
+					</tr>
+				    <?php endforeach; ?>
+			    <?php else: ?>
+				<tr>
+					<td colspan="6" class="no-results">Nenhuma encomenda urgente encontrada</td>
+				</tr>
+	        	    <?php endif; ?>
                         </tbody>
-		    </table>
+                    </table>
                 </div>
             </section>
         </main>

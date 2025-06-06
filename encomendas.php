@@ -22,18 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['company'])) {
 // Processar atualização de encomendas
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['encomenda'])) {
-        
         // Inserir encomendas selecionadas
         $stmt = $db_encomendas->prepare("
             INSERT INTO AtualizaEncomenda 
-            (Tipo, Quantidade, Dia)
-            VALUES (:tipo, :quantidade, :dia)
+            (Companhia, Tipo, Quantidade, Dia)
+            VALUES (:companhia, :tipo, :quantidade, :dia)
         ");
         
         // Verificar cada checkbox
         foreach ($_POST['tipo'] as $index => $tipo) {
-            // Verifica se o checkbox correspondente foi marcado
             if (isset($_POST['encomenda'][$index]) && $_POST['encomenda'][$index] === 'on') {
+                $stmt->bindValue(':companhia', $_POST['companhia'][$index], SQLITE3_TEXT);
                 $stmt->bindValue(':tipo', $tipo, SQLITE3_TEXT);
                 $stmt->bindValue(':quantidade', $_POST['quantidade'][$index], SQLITE3_INTEGER);
                 $stmt->bindValue(':dia', $_POST['dia'][$index], SQLITE3_TEXT);
@@ -44,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        header('Location: encomendas.php?status=success&company='.urlencode($_GET['company']));
+        header('Location: encomendas.php?status=success&company='.urlencode($_POST['companhia'][0]));
         exit;
     }
 }
@@ -69,9 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <nav class="menu">
                 <ul>
-		    <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                     <li><a href="stock.php"><i class="fas fa-boxes"></i> Stock</a></li>
-		    <li class="active"><a href="#"><i class="fas fa-truck"></i> Encomendas</a></li>
+                    <li class="active"><a href="#"><i class="fas fa-truck"></i> Encomendas</a></li>
                 </ul>
             </nav>
             <div class="user-profile">
@@ -85,121 +84,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Main Content -->
         <main class="main-content">
-        <h2><i class="fas fa-check-circle"></i> Atualizar Encomendas</h2>
+            <h2><i class="fas fa-check-circle"></i> Atualizar Encomendas</h2>
             <form action="encomendas.php" method="get" class="delivery-form">
                 <div class="form-group">
                     <label for="company"><i class="fas fa-building"></i> Nome da Companhia</label>
-                    <input type="text" id="company" name="company" value="<?= htmlspecialchars ($empresa_pesquisada)?>" required>
+                    <input type="text" id="company" name="company" value="<?= htmlspecialchars($empresa_pesquisada) ?>" required>
                     <div class="form-footer">
-                      <button type="submit" class="submit-btn">
-                        <i class="fas fa-check"></i> Pesquisa
-                      </button>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-check"></i> Pesquisar
+                        </button>
                     </div>
                 </div>
             </form>
-            <!-- Seção Tabela -->
-            <?php if(empty($encomendas)): ?>
-            <form action="encomendas.php" method="post" id="encomendasForm">
-            <section class="report-section">
-                <h2><i class="fas fa-table"></i> Encomendas </h2>
-                <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Tipo de Encomenda</th>
-                      <th>Quantidade</th>
-				              <th>Dia</th>
-				              <th>Selecionar</th>
-                    </tr>
-                      </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+            
+            <?php if (!empty($encomendas)): ?>
+                <form action="encomendas.php" method="post" id="encomendasForm">
+                    <input type="hidden" name="company" value="<?= htmlspecialchars($empresa_pesquisada) ?>">
+                    <section class="report-section">
+                        <h2><i class="fas fa-table"></i> Encomendas <?= htmlspecialchars($empresa_pesquisada) ?></h2>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Encomenda</th>
+                                        <th>Quantidade</th>
+                                        <th>Dia</th>
+                                        <th>Selecionar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($encomendas as $index => $encomenda): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($encomenda['Tipo']) ?>
+                                                <input type="hidden" name="tipo[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Tipo']) ?>">
+                                            </td>
+                                            <td><?= htmlspecialchars($encomenda['Quantidade']) ?>
+                                                <input type="hidden" name="quantidade[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Quantidade']) ?>">
+                                            </td>
+                                            <td><?= htmlspecialchars($encomenda['Dia']) ?>
+                                                <input type="hidden" name="dia[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Dia']) ?>">
+                                                <input type="hidden" name="companhia[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Companhia']) ?>">
+                                            </td>
+                                            <td class="checkbox-cell">
+                                                <input type="checkbox" name="encomenda[<?= $index ?>]" value="on" class="confirmar-encomenda">
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <div id="data-hora"><?= date('d-m-Y, H:i:s') ?></div>
+                    <div class="form-footer">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-check"></i> Atualizar
+                        </button>
+                    </div>
+                </form>
+            <?php elseif (isset($_GET['company'])): ?>
+                <section class="report-section">
+                    <h2><i class="fas fa-table"></i> Encomendas</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="no-results">Nenhuma encomenda encontrada para "<?= htmlspecialchars($_GET['company']) ?>"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            <?php endif; ?>
+            
+            <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
+                <div class="alert alert-success">
+                    Encomenda(s) atualizada(s) com sucesso!
                 </div>
-            </section>
-	   <div id="data-hora">20-05-2025, 17:33:48 Sex
-           </div>
-           <div class="form-footer">
-              <button type="submit" class="submit-btn">
-                 <i class="fas fa-check"></i> Atualizar
-              </button>
-           </div>
-         </form>
-            <?php elseif(!empty($encomendas)): ?>
-            <form action="encomendas.php" method="post" id="encomendasForm">
-            <section class="report-section">
-                <h2><i class="fas fa-table"></i> Encomendas <?= htmlspecialchars($empresa_pesquisada)?></h2>
-                <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Tipo de Encomenda</th>
-                      <th>Quantidade</th>
-				              <th>Dia</th>
-				              <th>Selecionar</th>
-                    </tr>
-                      </thead>
-                        <tbody>
-                          <?php foreach ($encomendas as $index => $encomenda): ?>
-<tr>
-    <td><?= htmlspecialchars($encomenda['Tipo']) ?>
-        <input type="hidden" name="tipo[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Tipo']) ?>">
-    </td>
-    <td><?= htmlspecialchars($encomenda['Quantidade']) ?>
-        <input type="hidden" name="quantidade[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Quantidade']) ?>">
-    </td>
-    <td><?= htmlspecialchars($encomenda['Dia']) ?>
-        <input type="hidden" name="dia[<?= $index ?>]" value="<?= htmlspecialchars($encomenda['Dia']) ?>">
-    </td>
-    <td class="checkbox-cell">
-        <input type="checkbox" name="encomenda[<?= $index ?>]" value="on" class="confirmar-encomenda">
-    </td>
-</tr>
-<?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-	   <div id="data-hora">20-05-2025, 17:33:48 Sex
-           </div>
-           <div class="form-footer">
-              <button type="submit" class="submit-btn">
-                 <i class="fas fa-check"></i> Atualizar
-              </button>
-           </div>
-         </form>
-           <?php elseif (isset($_GET['company'])): ?>
-           <form action="encomendas.php" method="post" id="encomendasForm">
-            <section class="report-section">
-                <h2><i class="fas fa-table"></i> Encomendas </h2>
-                <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Tipo de Encomenda</th>
-                      <th>Quantidade</th>
-				              <th>Dia</th>
-				              <th>Selecionar</th>
-                    </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                        <th><p class="no-results">Nenhuma encomenda encontrada para "<?= htmlspecialchars($_GET['company']) ?>"</p></th>
-                        </tr>
-                      </tbody>
-                    </table>
-                </div>
-            </section>
-	   <div id="data-hora">20-05-2025, 17:33:48 Sex
-           </div>
-           <div class="form-footer">
-              <button type="submit" class="submit-btn">
-                 <i class="fas fa-check"></i> Atualizar
-              </button>
-           </div>
-         </form>
             <?php endif; ?>
         </main>
     </div>
+    
+    <!-- Pop-up de Confirmação -->
+	<div id="confirmationPopup" class="popup-overlay" style="display: none;">
+    		<div class="popup-content">
+        		<h2>Atenção</h2>
+        		<p>Quer efetuar a atualização das encomendas?</p>
+        	<div class="popup-buttons">
+            		<button id="confirmYes" class="popup-btn yes-btn">Sim</button>
+            		<button id="confirmNo" class="popup-btn no-btn">Não</button>
+        	</div>
+    		</div>
+     	</div>
+    
+    <script type="text/javascript" src="scripts/func_encomendas.js"></script>
 </body>
 </html>
