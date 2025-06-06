@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DEAPC Inventory</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="logo.png" alt="DEAPC Inventory">
+                <h2>DEAPC Inventory</h2>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li class="active"><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                    <li><a href="concluir-entrega.html"><i class="fas fa-check-circle"></i> <span>Concluir Entrega</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <img src="images/user-avatar.png" alt="Fornecedor">
+                <div>
+                    <span class="username">Fornecedor</span>
+                    <span class="user-role">Conta Fornecedor</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+            
+            <!-- Cards de Resumo -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Entregas Hoje</h3>
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="card-value">24</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Em Progresso</h3>
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="card-value">8</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Concluídas</h3>
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="card-value">16</div>
+                </div>
+            </div>
+
+            <!-- Tabela de Entregas Recentes -->
+            <section class="recent-activity">
+                <h2><i class="fas fa-history"></i> Entregas Recentes</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Companhia</th>
+                            <th>Produto</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#1001</td>
+                            <td>Empresa A</td>
+                            <td>Caixas de Material</td>
+                            <td>10/05/2024</td>
+                            <td><span class="status completed">Concluída</span></td>
+                        </tr>
+                        <tr>
+                            <td>#1002</td>
+                            <td>Empresa B</td>
+                            <td>Componentes Eletrônicos</td>
+                            <td>09/05/2024</td>
+                            <td><span class="status completed">Concluída</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
