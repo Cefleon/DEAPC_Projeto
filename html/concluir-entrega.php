@@ -46,6 +46,7 @@ try {
             }
             
             $success = "Entrega para $company registrada com sucesso!";
+            $_SESSION['new_delivery_added'] = true;
         } else {
             $error = "Por favor, preencha pelo menos um produto e a data de entrega.";
         }

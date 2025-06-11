@@ -109,25 +109,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <tbody>
                             <tr>
                                 <td>Carnes</td>
-				<td><input type="number" name="Carnes" value="40" min="0"></td>
+				<td><input type="number" name="Carnes" value="0" min="0"></td>
 			    </tr>
 			    <tr>
                                 <td>Peixes</td>
-				<td><input type="number" name="Peixes" value="4" min="0"></td>
+				<td><input type="number" name="Peixes" value="0" min="0"></td>
 			    </tr>
                             <tr>    
 				<td>Frutas</td>
-				<td><input type="number" name="Frutas" value="90" min="0"></td>
+				<td><input type="number" name="Frutas" value="0" min="0"></td>
 			    </tr>
 			    <tr>
                                 <td>Congelados</td>
-				<td><input type="number" name="Congelados" value="258" min="0"></td>
+				<td><input type="number" name="Congelados" value="0" min="0"></td>
                             </tr>
                         </tbody>
                     </table>
                   </div>
             </section>
-	  <div id="data-hora">20-05-2025, 17:33:48 Sex
+	  <div id="data-hora"><?= date('d-m-Y, H:i:s') ?>
 	  </div>
 	  <div class="form-footer">
 	     <button type="submit" class="submit-btn">
@@ -137,5 +137,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	</form>
         </main>
     </div>
+    
+    	<!-- Pop-up de Confirmação -->
+	<div id="confirmationPopup" class="popup-overlay" style="display: none;">
+    		<div class="popup-content">
+        		<h2>Atenção</h2>
+        		<p>Quer efetuar a atualização de stock?</p>
+        	<div class="popup-buttons">
+            		<button id="confirmYes" class="popup-btn yes-btn">Sim</button>
+            		<button id="confirmNo" class="popup-btn no-btn">Não</button>
+        	</div>
+    		</div>
+     	</div>
+     	
+     	<script type="text/javascript" src="scripts/stock.js"></script>
 </body>
 </html>

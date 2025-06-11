@@ -410,6 +410,126 @@ tr:hover {
     object-fit: cover;
 }
 
+/* ===== CONTAINER SCROLLTABLE ===== */
+.table-scroll-container {
+    max-height: 250px; /* Altura para exibir ~5 linhas */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* ===== INSIDE TABLE CONTAINER ===== */
+.table-scroll-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+
+/* ===== FIXED HEADER ===== */
+.table-scroll-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== TABLE ROW ===== */
+.table-scroll-container tbody tr {
+    height: 40px; /* Altura fixa para cada linha */
+}
+
+/* ===== COSTUM SCROLLBAR ===== */
+.table-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ===== SCROLLABLE TABLES ===== */
+.table-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.scrollable-table {
+    max-height: 300px; /* Altura para mostrar aproximadamente 5 linhas */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.scrollable-table table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.scrollable-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+}
+
+/* ===== SCROLLBAR DEFINITIONS ===== */
+.scrollable-table::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.scrollable-table::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.scrollable-table::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ===== TABLE ROW HEIGHT =====*/
+.scrollable-table tbody tr {
+    height: 48px; /* Altura fixa para cada linha */
+}
+
+/* ===== EXISTING STYLES ===== */
+.status-critical {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.status-warning {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.status-urgent {
+    color: #fd7e14;
+    font-weight: bold;
+}
+
+.no-results {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
 /* ===== BOTÃO ATUALIZAR STOCK ===== */
 .delivery-section {
     background: white;
@@ -446,6 +566,56 @@ tr:hover {
     background: #219653;
     transform: translateY(-2px);
 }
+<<<<<<< HEAD
+=======
+.confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+}
+
+.modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+}
+
+.modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+}
+
+.confirm-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.cancel-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+>>>>>>> main
 
 /* ===== BOTÃO ATUALIZAR ENCOMENDA ===== */
 .delivery-section {
@@ -484,7 +654,60 @@ tr:hover {
     transform: translateY(-2px);
 }
 
+<<<<<<< HEAD
 /* ===== FORMULÁRIO DE STOCK ===== */
+=======
+.confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+}
+
+.modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+}
+
+.modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+}
+
+.confirm-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.cancel-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+/*===== FORMULÁRIO DE STOCK ===== */
+
+>>>>>>> main
 .delivery-form {
     background: white;
     border-radius: 10px;
@@ -589,6 +812,57 @@ tr:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+<<<<<<< HEAD
+=======
+.confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+}
+
+.modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+}
+
+.modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+}
+
+.confirm-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.cancel-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+>>>>>>> main
 /* ===== FORMULÁRIO DE ENCOMENDA ===== */
 .delivery-form {
     background: white;
@@ -693,6 +967,105 @@ tr:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+<<<<<<< HEAD
+=======
+.confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+}
+
+.modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+}
+
+.modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+}
+
+.confirm-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.cancel-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+/* Estilos para a pop-up */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.popup-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.yes-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.no-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+>>>>>>> main
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 768px) {
     .dashboard-container {
