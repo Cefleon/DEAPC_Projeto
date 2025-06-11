@@ -51,7 +51,7 @@ $menuItems = $menus[$role] ?? $menus['Utilizador'];
             <span class="username"><?php echo htmlspecialchars($username); ?></span>
             <span class="user-role"><?php echo htmlspecialchars($role); ?></span>
             <form method="POST" action="logout.php" style="display:inline;">
-                <button class="logout-btn" type="submit" title="Sair">Sair</button>
+                <a href="logout.php" class="btn btn-outline-light btn-sm">Sair</a>
             </form>
         </div>
     </div>

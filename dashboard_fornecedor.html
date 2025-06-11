@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - DEAPC Inventory</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Dashboard - Gestão de Inventário</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -12,85 +12,104 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <img src="logo.png" alt="DEAPC Inventory">
+                <img src="images/logo.jpg" alt="Logo" class="logo">
                 <h2>DEAPC Inventory</h2>
             </div>
             <nav class="menu">
                 <ul>
-                    <li class="active"><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                    <li><a href="concluir-entrega.html"><i class="fas fa-check-circle"></i> <span>Concluir Entrega</span></a></li>
+                    <li class="active"><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="stock.html"><i class="fas fa-boxes"></i> Stock</a></li>
+                    <li><a href="encomendas.html"><i class="fas fa-truck"></i> Encomendas</a></li>
                 </ul>
             </nav>
             <div class="user-profile">
-                <img src="images/user-avatar.png" alt="Fornecedor">
+                <img src="images/user-avatar.png" alt="User">
                 <div>
-                    <span class="username">Fornecedor</span>
-                    <span class="user-role">Conta Fornecedor</span>
+                    <span class="username">Fernando Martins</span>
+                    <span class="user-role">Funcionário</span>
                 </div>
             </div>
         </aside>
 
-        <!-- Conteúdo Principal -->
+        <!-- Main Content -->
         <main class="main-content">
-            <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
-            
-            <!-- Cards de Resumo -->
-            <div class="dashboard-cards">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Entregas Hoje</h3>
-                        <i class="fas fa-truck"></i>
-                    </div>
-                    <div class="card-value">24</div>
+                  
+            <!-- Seção Tabela -->
+            <section class="report-section">
+                <h2><i class="fas fa-table"></i> Stock Crítico</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Ficheiro</th>
+                                <th>Categoria</th>
+                                <th>Responsável</th>
+				<th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nozes</td>
+                                <td>PDF</td>
+                                <td>CC</td>
+                                <td>Tiago</td>
+				<td>Enviado</td>
+                            </tr>
+                            <tr>
+                                <td>Arroz Basmati</td>
+                                <td>DOCX</td>
+                                <td>Consumível</td>
+                                <td>Albertino</td>
+                                <td>Em Falta - Prioritário</td>
+			     <tr>
+				<td>Papel higiénico</td>
+                                <td>CSV</td>
+                                <td>Premium</td>
+                                <td>Gervásio</td>
+                                <td>A 30% do stock - Atenção</td>
+			     </tr>
+                        </tbody>
+                    </table>
                 </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Em Progresso</h3>
-                        <i class="fas fa-spinner"></i>
-                    </div>
-                    <div class="card-value">8</div>
+            </section>
+	    <section class="report-section">
+                <h2><i class="fas fa-table"></i> Encomendas Urgentes</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Ficheiro</th>
+                                <th>Categoria</th>
+                                <th>Responsável</th>
+				<th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nozes</td>
+                                <td>PDF</td>
+                                <td>CC</td>
+                                <td>Tiago</td>
+				<td>Enviado</td>
+                            </tr>
+                            <tr>
+                                <td>Arroz Basmati</td>
+                                <td>DOCX</td>
+                                <td>Consumível</td>
+                                <td>Albertino</td>
+                                <td>Em Falta - Prioritário</td>
+			     <tr>
+				<td>Papel higiénico</td>
+                                <td>CSV</td>
+                                <td>Premium</td>
+                                <td>Gervásio</td>
+                                <td>A 30% do stock - Atenção</td>
+			     </tr>
+                        </tbody>
+		    </table>
                 </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Concluídas</h3>
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div class="card-value">16</div>
-                </div>
-            </div>
-
-            <!-- Tabela de Entregas Recentes -->
-            <section class="recent-activity">
-                <h2><i class="fas fa-history"></i> Entregas Recentes</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Companhia</th>
-                            <th>Produto</th>
-                            <th>Data</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#1001</td>
-                            <td>Empresa A</td>
-                            <td>Caixas de Material</td>
-                            <td>10/05/2024</td>
-                            <td><span class="status completed">Concluída</span></td>
-                        </tr>
-                        <tr>
-                            <td>#1002</td>
-                            <td>Empresa B</td>
-                            <td>Componentes Eletrônicos</td>
-                            <td>09/05/2024</td>
-                            <td><span class="status completed">Concluída</span></td>
-                        </tr>
-                    </tbody>
-                </table>
             </section>
         </main>
     </div>

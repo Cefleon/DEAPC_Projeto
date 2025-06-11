@@ -365,7 +365,6 @@ tr:hover {
 }
 
 
-
 /* ===== TABLE CONTENT ===== */
 
 .table-container {
@@ -567,6 +566,8 @@ tr:hover {
     background: #219653;
     transform: translateY(-2px);
 }
+<<<<<<< HEAD
+=======
 .confirmation-modal {
             position: fixed;
             top: 0;
@@ -614,6 +615,7 @@ tr:hover {
     transition: var(--transition);
     font-weight: 600;
 }
+>>>>>>> main
 
 /* ===== BOTÃO ATUALIZAR ENCOMENDA ===== */
 .delivery-section {
@@ -652,6 +654,9 @@ tr:hover {
     transform: translateY(-2px);
 }
 
+<<<<<<< HEAD
+/* ===== FORMULÁRIO DE STOCK ===== */
+=======
 .confirmation-modal {
             position: fixed;
             top: 0;
@@ -702,6 +707,7 @@ tr:hover {
 
 /*===== FORMULÁRIO DE STOCK ===== */
 
+>>>>>>> main
 .delivery-form {
     background: white;
     border-radius: 10px;
@@ -806,6 +812,8 @@ tr:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+<<<<<<< HEAD
+=======
 .confirmation-modal {
             position: fixed;
             top: 0;
@@ -854,6 +862,7 @@ tr:hover {
     font-weight: 600;
 }
 
+>>>>>>> main
 /* ===== FORMULÁRIO DE ENCOMENDA ===== */
 .delivery-form {
     background: white;
@@ -958,6 +967,8 @@ tr:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+<<<<<<< HEAD
+=======
 .confirmation-modal {
             position: fixed;
             top: 0;
@@ -1054,6 +1065,7 @@ tr:hover {
     color: white;
 }
 
+>>>>>>> main
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 768px) {
     .dashboard-container {
