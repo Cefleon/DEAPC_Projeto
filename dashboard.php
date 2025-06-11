@@ -54,7 +54,7 @@ while ($row = $result_encomendas->fetchArray(SQLITE3_ASSOC)) {
     $dias_atraso = ($hoje - $dia_encomenda) / (60 * 60 * 24);
     
     // Se a encomenda estiver atrasada até 5 dias
-    if ($dias_atraso > 0 && $dias_atraso <= 5) {
+    if ($dias_atraso >= 5) {
         $encomendas_urgentes[] = [
             'Companhia' => $row['Companhia'],
             'Produto' => $row['Tipo'],
@@ -124,14 +124,13 @@ while ($row = $result_encomendas->fetchArray(SQLITE3_ASSOC)) {
                             <?php if (!empty($stock_critico)): ?>
 				    <?php 
 				    // Limitar a exibição a 5 itens (o scroll cuidará do resto)
-				    $display_items = array_slice($stock_critico, 0, 5);
-				    foreach ($display_items as $item): ?>
+				    foreach ($stock_critico as $item): ?>
 					<tr>
 					    <td><?= htmlspecialchars($item['Produto']) ?></td>
 					    <td><?= htmlspecialchars($item['Quantidade']) ?></td>
 					    <td><?= htmlspecialchars($item['Percentual']) ?>%</td>
-					    <td class="<?= $item['Percentual'] < 5 ? 'status-critical' : 'status-warning' ?>">
-					        <?= $item['Percentual'] < 5 ? 'Crítico' : 'Atenção' ?>
+					    <td class="<?= $item['Percentual'] < 2 ? 'status-critical' : 'status-warning' ?>">
+					    	<?= $item['Percentual'] < 2 ? 'Crítico' : 'Atenção' ?>
 					    </td>
 					</tr>
 			    <?php endforeach; ?>
