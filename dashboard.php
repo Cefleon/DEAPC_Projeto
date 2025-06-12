@@ -44,7 +44,7 @@ while ($row = $result_stock->fetchArray(SQLITE3_ASSOC)) {
     }
 }
 
-// Processar encomendas urgentes (com atraso de até 5 dias)
+// Processar encomendas urgentes
 $encomendas_urgentes = [];
 $result_encomendas = $db_encomendas->query("SELECT * FROM AtualizaEncomenda");
 
@@ -53,7 +53,7 @@ while ($row = $result_encomendas->fetchArray(SQLITE3_ASSOC)) {
     $hoje = strtotime('today');
     $dias_atraso = ($hoje - $dia_encomenda) / (60 * 60 * 24);
     
-    // Se a encomenda estiver atrasada até 5 dias
+    // Se a encomenda estiver atrasada acima de 5 dias
     if ($dias_atraso >= 5) {
         $encomendas_urgentes[] = [
             'Companhia' => $row['Companhia'],
