@@ -5,6 +5,22 @@
   error_reporting(E_ALL);
   ini_set('display_errors' , 1);
 
+// Conexão com os bancos de dados
+$db_pedidos = new SQLite3('/var/www/html/public_html/data/pedidos.db');
+
+// Obter dados de entregas
+$entregas = [];
+try {
+    $result_pedidos = $db_pedidos->query("SELECT * FROM ListaEncomenda"); // Apenas para usar como exemplo
+    if ($result_pedidos) {
+        while ($row = $result_pedidos->fetchArray(SQLITE3_ASSOC)) {
+            $entregas[] = $row;
+        }
+    }
+} catch (Exception $e) {
+    error_log("Erro ao obter pedidos: " . $e->getMessage());
+}
+
 // Método de request e leitura de dados da página stock
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -29,25 +45,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Processamento dos dados (versão simplificada e segura)
         $produtos = [
-             'Carnes' => isset($_POST['Carnes']) ? max(0, intval($_POST['Carnes'])) : 0,
+            'Carnes' => isset($_POST['Carnes']) ? max(0, intval($_POST['Carnes'])) : 0,
             'Peixes' => isset($_POST['Peixes']) ? max(0, intval($_POST['Peixes'])) : 0,
             'Frutas' => isset($_POST['Frutas']) ? max(0, intval($_POST['Frutas'])) : 0,
-            'Congelados' => isset($_POST['Congelados']) ? max(0, intval($_POST['Congelados'])) : 0
+            'Congelados' => isset($_POST['Congelados']) ? max(0, intval($_POST['Congelados'])) : 0,
+            'Conservas' => isset($_POST['Conservas']) ? max(0, intval($_POST['Conservas'])) : 0,
+            'Eletrónica' => isset($_POST['Eletrónica']) ? max(0, intval($_POST['Eletrónica'])) : 0,
+            'Bricolage' => isset($_POST['Bricolage']) ? max(0, intval($_POST['Bricolage'])) : 0
             ];
 
         // Operação de atualização
-        $stmt = $database->prepare("
-            INSERT OR REPLACE INTO AtualizaStock (Produto, Quantidade)
-            VALUES (:produto, :quantidade)
-        ");
-        
-        foreach ($produtos as $produto => $quantidade) {
+       foreach ($produtos as $produto => $quantidade) {
+            if ($quantidade > 0) {
+                $existing = $database->querySingle("SELECT Quantidade FROM AtualizaStock WHERE Produto = '$produto'", true);
+                if ($existing) {
+                    // Atualiza o valor
+                    $novaquantidade = $existing['Quantidade'] + $quantidade;
+                    $stmt = $database->prepare("UPDATE AtualizaStock SET Quantidade = :quantidade WHERE Produto = :produto");
+                    $stmt->bindValue(':quantidade', $novaquantidade, SQLITE3_INTEGER);
+                } else {
+                    // Introduz novo valor
+                    $novaquantidade = $quantidade;
+                    $stmt = $database->prepare("INSERT INTO AtualizaStock (Produto, Quantidade) VALUES (:produto, :quantidade)");
+                    $stmt->bindValue(':quantidade', $quantidade, SQLITE3_INTEGER);
+                }
+                
             $stmt->bindValue(':produto', $produto, SQLITE3_TEXT);
-            $stmt->bindValue(':quantidade', $quantidade, SQLITE3_INTEGER);
+            
             if (!$stmt->execute()) {
                 throw new Exception("Erro ao atualizar stock para $produto.");
-            }
-        }
+           	}
+           }
+	}
 
         header('Location: stock.php?status=success');
         exit;
@@ -123,6 +152,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td>Congelados</td>
 				<td><input type="number" name="Congelados" value="0" min="0"></td>
                             </tr>
+                            <tr>
+                                <td>Conservas</td>
+				<td><input type="number" name="Conservas" value="0" min="0"></td>
+                            </tr>
+                            <tr>
+                                <td>Eletrónica</td>
+				<td><input type="number" name="Eletrónica" value="0" min="0"></td>
+                            </tr>
+                            <tr>
+                                <td>Bricolage</td>
+				<td><input type="number" name="Bricolage" value="0" min="0"></td>
+                            </tr>
                         </tbody>
                     </table>
                   </div>
@@ -135,6 +176,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              </button>
           </div>
 	</form>
+	
+	<!-- Seção Tabela Entregas -->
+		<section class="report-section">
+		    <h2><i class="fas fa-table"></i> Entregas</h2>
+		    <div class="table-scroll-container">
+			<table>
+			    <thead>
+				<tr>
+				    <th>Companhia</th>
+				    <th>Produto</th>
+				    <th>Quantidade</th>
+				</tr>
+			    </thead>
+			    <tbody>
+				<?php if (!empty($entregas)): ?>
+				    <?php foreach ($entregas as $pedido): ?>
+				        <tr>
+				            <td><?= htmlspecialchars($pedido['Companhia'] ?? '') ?></td>
+				            <td><?= htmlspecialchars($pedido['Tipo'] ?? $pedido['Produto'] ?? '') ?></td>
+				            <td><?= htmlspecialchars($pedido['Quantidade'] ?? '') ?></td>
+				        </tr>
+				    <?php endforeach; ?>
+				<?php else: ?>
+				    <tr>
+				        <td colspan="3" class="no-results">Nenhuma entrega encontrada</td>
+				    </tr>
+				<?php endif; ?>
+			    </tbody>
+			</table>
+		    </div>
+		</section>	
         </main>
     </div>
     
@@ -149,7 +221,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         	</div>
     		</div>
      	</div>
-     	
      	<script type="text/javascript" src="scripts/stock.js"></script>
 </body>
 </html>
