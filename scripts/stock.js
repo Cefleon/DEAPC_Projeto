@@ -1,30 +1,26 @@
-	document.addEventListener('DOMContentLoaded', function() {
-	    const stockForm = document.getElementById('stockForm');
-	    const confirmationPopup = document.getElementById('confirmationPopup');
-	    const confirmYes = document.getElementById('confirmYes');
-	    const confirmNo = document.getElementById('confirmNo');
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('stockForm');
+    const popup = document.getElementById('confirmationPopup');
+    const yesBtn = document.getElementById('confirmYes');
+    const noBtn = document.getElementById('confirmNo');
 
-	    // Interceptar o envio do formulário
-	    stockForm.addEventListener('submit', function(e) {
-		e.preventDefault(); // Impede o envio padrão do formulário
-		confirmationPopup.style.display = 'flex'; // Mostra a pop-up
-	    });
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        popup.style.display = 'flex';
+    });
 
-	    // Botão "Sim" - Envia o formulário
-	    confirmYes.addEventListener('click', function() {
-		confirmationPopup.style.display = 'none'; // Esconde a pop-up
-		stockForm.removeEventListener('submit', arguments.callee); // Remove o listener anterior
-		stockForm.submit(); // Envia o formulário
-	    });
+    yesBtn.addEventListener('click', function () {
+        popup.style.display = 'none';
+        form.submit();
+    });
 
-	    // Botão "Não" - Fecha a pop-up
-	    confirmNo.addEventListener('click', function() {
-		confirmationPopup.style.display = 'none'; // Esconde a pop-up
-	    });
+    noBtn.addEventListener('click', function () {
+        popup.style.display = 'none';
+    });
 
-	    // Mostrar mensagem de sucesso se houver parâmetro na URL
-	    const urlParams = new URLSearchParams(window.location.search);
-	    if (urlParams.has('status') && urlParams.get('status') === 'success') {
-		alert('Stock atualizado com sucesso!');
-	    }
-	});
+    // Mostrar mensagem de sucesso se houver parâmetro na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('status') && urlParams.get('status') === 'success') {
+        alert('Stock atualizado com sucesso!');
+    }
+});

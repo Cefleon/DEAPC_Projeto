@@ -1,4 +1,4 @@
-	document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
 	    const encomendasForm = document.getElementById('encomendasForm');
 	    const confirmationPopup = document.getElementById('confirmationPopup');
 	    const confirmYes = document.getElementById('confirmYes');
@@ -23,8 +23,15 @@
 	    	});
 
 	    // Mostrar mensagem de sucesso se houver parâmetro na URL
-	    	const urlParams = new URLSearchParams(window.location.search);
-	    		if (urlParams.has('status') && urlParams.get('status') === 'success') {
-				alert('Encomendas atualizadas com sucesso!');
-	    		}
+	    //	const urlParams = new URLSearchParams(window.location.search);
+	    //		if (urlParams.has('status') && urlParams.get('status') === 'success') {
+		//		alert('Encomendas atualizadas com sucesso!');
+	    //		}
+
+	    const urlParams = new URLSearchParams(window.location.search);
+	    if (urlParams.get('status') === 'success') {
+	        setTimeout(function() {
+	            window.location = 'encomendas.php';
+	        }, 2500);
+	    }
 	});

@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 
 // Apenas admins podem aceder
@@ -11,7 +14,7 @@ if (!isset($_SESSION['username']) || ($_SESSION['role'] ?? '') !== 'Administrado
 $db = new SQLite3(__DIR__ . '/inventory.db');
 
 // Obter lista de utilizadores
-$results = $db->query('SELECT id,username, email, role FROM users ORDER BY username');
+$results = $db->query('SELECT id, name, email, role FROM users ORDER BY role, name');
 
 $users = [];
 while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
@@ -36,22 +39,17 @@ $role = $_SESSION['role'];
 </head>
 <body>
     <div class="dashboard-container">
-        <?php include 'header.php'; ?>
+        <?php include __DIR__ . '/header.php';; ?>
 
         <main class="main-content">
 
-
         <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
+            <div class="alert alert-success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert error"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+            <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
         <?php endif; ?>
-        
-    
-
-
 
             <div class="users-header">
                 <h1><i class="fas fa-users-cog"></i> Utilizadores Registados</h1>
@@ -75,41 +73,43 @@ $role = $_SESSION['role'];
                             <tr><td colspan="4">Nenhum utilizador registado.</td></tr>
                         <?php else: ?>
                             <?php foreach ($users as $user): ?>
-                                    <?php
-                                        $role_class_map = [
-                                            'Administrador' => 'admin',
-                                            'Fornecedor' => 'supplier',
-                                            'Funcionario' => 'staff',
-                                        ];
-                                        $role = $user['role'];
-                                        $badge_class = $role_class_map[$role] ?? 'badge-secondary';
-                                        ?>
+                                <?php
+                                    $role_class_map = [
+                                        'Administrador' => 'admin',
+                                        'Fornecedor' => 'supplier',
+                                        'Funcionario' => 'staff',
+                                    ];
+                                    $roleUser = $user['role'];
+                                    $badge_class = $role_class_map[$roleUser] ?? 'badge-secondary';
+                                ?>
                                 <tr>
                                     <td>
                                         <div class="user-cell">
-                                            <?php echo htmlspecialchars($user['username']); ?>
+                                            <?php echo htmlspecialchars($user['name']); ?>
                                         </div>
                                     </td>
                                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                                     <td>
-                                        <span class="badge <?php echo $badge_class; ?>">
-                                            <?php echo htmlspecialchars($role); ?>
+                                        <span class="admin-badge <?php echo $badge_class; ?>">
+                                            <?php echo htmlspecialchars($roleUser); ?>
                                         </span>
                                     </td>
                                     <td class="actions">
                                         <button
-                                            class="edit-btn"
+                                            class="admin-btn edit"
                                             title="Editar"
                                             data-id="<?= $user['id'] ?>"
-                                            data-username="<?= htmlspecialchars($user['username']) ?>"
+                                            data-username="<?= htmlspecialchars($user['name']) ?>"
                                             data-email="<?= htmlspecialchars($user['email']) ?>"
-                                            data-role="<?= $user['role'] ?>"
+                                            data-role="<?= $roleUser ?>"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editUserModal"
                                         >
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="delete-btn" title="Eliminar"
+                                        <button
+                                            class="admin-btn delete"
+                                            title="Eliminar"
                                             onclick="if(confirm('Tem certeza que deseja eliminar este utilizador?')) 
                                                 window.location.href='scripts/delete-user.php?id=<?= $user['id'] ?>'">
                                             <i class="fas fa-trash-alt"></i>
@@ -123,7 +123,6 @@ $role = $_SESSION['role'];
             </div>
         </main>
     </div>
-
 
 <!-- Modal para adicionar utilizador -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
@@ -154,11 +153,11 @@ $role = $_SESSION['role'];
           <label for="role" class="form-label">Tipo de Utilizador</label>
           <select name="role" class="form-select" required>
             <option value="Administrador">Administrador</option>
-            <option value="Funcionario">Funcionário</option>
+            <option value="Funcionario">Funcionario</option>
             <option value="Fornecedor">Fornecedor</option>
           </select>
         </div>
-
+                                    
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-success">Guardar</button>
@@ -167,7 +166,6 @@ $role = $_SESSION['role'];
     </form>
   </div>
 </div>
-
 
 <!-- Modal para editar o utilizador -->
 
@@ -184,12 +182,12 @@ $role = $_SESSION['role'];
 
           <div class="mb-3">
             <label>Email</label>
-            <input type="email" class="form-control" id="editUserEmail" readonly>
+            <input type="email" class="form-control" id="editUserEmail" name="email" readonly>
           </div>
 
           <div class="mb-3">
             <label>Username</label>
-            <input type="text" class="form-control" id="editUsername" readonly>
+            <input type="text" class="form-control" id="editUsername" name="username" readonly>
           </div>
 
           <div class="mb-3">
@@ -197,6 +195,7 @@ $role = $_SESSION['role'];
             <select class="form-control" name="role" id="editUserRole" required>
               <option value="Administrador">Administrador</option>
               <option value="Fornecedor">Fornecedor</option>
+              <option value="Funcionario">Funcionario</option>
             </select>
           </div>
 
@@ -213,7 +212,6 @@ $role = $_SESSION['role'];
     </form>
   </div>
 </div>
-
 
 <script type="text/javascript" src="scripts/admin-users.js"></script>
 <script type="text/javascript" src="scripts/edit-user.js"></script>

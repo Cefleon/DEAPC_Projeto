@@ -7,14 +7,12 @@ error_reporting(E_ALL);
 session_start();
 date_default_timezone_set('Europe/Lisbon');
 
-
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
 }
 
 require('fpdf/fpdf.php');
-
 
 class PDF extends FPDF
 {
@@ -58,44 +56,76 @@ class PDF extends FPDF
     }
 }
 
-
 $db = new SQLite3(__DIR__ . '/inventory.db');
 
-// Obter os dados do formulário
 $reportType = $_POST['report-type'] ?? 'stock';
 $format = $_POST['format'] ?? 'csv';
-$dateStart = $_POST['date-start'] ?? null;
-$dateEnd = $_POST['date-end'] ?? null;
+$month = $_POST['month'] ?? '';
 
-// Função para ir à base de dados e buscar os dados necessários
-function fetchData($db, $reportType, $dateStart, $dateEnd) {
+$titles = [
+    'stock'  => 'Relatório: Stock',
+    'orders' => 'Relatório: Encomendas',
+    'users'  => 'Relatório: Utilizadores'
+];
+
+$headersCustom = [
+    'stock'  => ['ID', 'Produto', 'Quantidade', 'Data de Atualização'],
+    'orders' => ['ID', 'Empresa', 'Utilizador', 'Data de Entrega', 'Estado', 'Quantidade', 'Tipo'],
+    'users'  => ['ID', 'Nome', 'Email', 'Perfil', 'Criado em']
+];
+
+$map = [
+    // Stock
+    'ID' => 'ID',
+    'Produto' => 'Produto',
+    'Quantidade' => 'Quantidade',
+    'Data de Atualização' => 'Data_Atualização',
+    // Orders
+    'ID' => 'id',
+    'Empresa' => 'company_name',
+    'Utilizador' => 'user_id',
+    'Data de Entrega' => 'delivery_date',
+    'Estado' => 'status',
+    'Quantidade' => 'quantity',
+    'Tipo' => 'Tipo',
+    // Users
+    'Nome' => 'name',
+    'Email' => 'email',
+    'Perfil' => 'role',
+    'Criado em' => 'created_at'
+];
+
+function fetchData($db, $reportType, $month)
+{
     $data = [];
     $where = "";
 
-    $hasDate = in_array($reportType, ['orders']); // só orders tem data
-    if ($hasDate && $dateStart && $dateEnd) {
-        $where = " WHERE data >= '$dateStart' AND data <= '$dateEnd'";
-    }
-
-    switch ($reportType) {
-        case 'stock':
-            $query = "SELECT id, nome_produto, quantidade, categoria FROM stock";
-            break;
-        case 'orders':
-            $query = "SELECT id, cliente, produto, quantidade, data FROM encomendas $where";
-            break;
-        case 'users':
-            $where = "";
-            if ($dateStart && $dateEnd) {
-                $where = " WHERE created_at >= '$dateStart' AND created_at <= '$dateEnd'";
-            }
-            $query = "SELECT id, username, email, role, created_at FROM users $where";
-            break;
-        default:
-            return [];
+    if ($reportType === 'stock') {
+        $query = "SELECT ID, Produto, Quantidade, Data_Atualização FROM AtualizaStock";
+        if ($month) {
+            $where = " WHERE strftime('%m', Data_Atualização) = '$month'";
+            $query .= $where;
+        }
+    } elseif ($reportType === 'orders') {
+        $query = "SELECT id, company_name, user_id, delivery_date, status, quantity, Tipo FROM deliveries";
+        if ($month) {
+            $where = " WHERE strftime('%m', delivery_date) = '$month'";
+            $query .= $where;
+        }
+    } elseif ($reportType === 'users') {
+        $query = "SELECT id, name, email, role, created_at FROM users";
+        if ($month) {
+            $where = " WHERE strftime('%m', created_at) = '$month'";
+            $query .= $where;
+        }
+    } else {
+        return [];
     }
 
     $results = $db->query($query);
+    if (!$results) {
+        return [];
+    }
 
     while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
         $data[] = $row;
@@ -104,26 +134,40 @@ function fetchData($db, $reportType, $dateStart, $dateEnd) {
     return $data;
 }
 
-$data = fetchData($db, $reportType, $dateStart, $dateEnd);
+$data = fetchData($db, $reportType, $month);
 
-// Cabeçalhos dinâmicos
-$titles = [
-    'stock'  => 'Relatório: Stock',
-    'orders' => 'Relatório: Encomendas',
-    'users'  => 'Relatório: Utilizadores'
+$meses = [
+    '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março', '04' => 'Abril',
+    '05' => 'Maio', '06' => 'Junho', '07' => 'Julho', '08' => 'Agosto',
+    '09' => 'Setembro', '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
 ];
 
-// Gerar o CSV
 if ($format === 'csv') {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="relatorio_' . $reportType . '.csv"');
 
     $output = fopen('php://output', 'w');
 
+    // Título do relatório
+    fputcsv($output, [$titles[$reportType] ?? 'Relatório']);
+
+    // Mês selecionado
+    if ($month && isset($meses[$month])) {
+        fputcsv($output, ["Mês: " . $meses[$month]]);
+    }
+
+    // Cabeçalhos personalizados
+    $headers = $headersCustom[$reportType] ?? array_keys($data[0] ?? []);
+    fputcsv($output, $headers);
+
     if (!empty($data)) {
-        fputcsv($output, array_keys($data[0]));
         foreach ($data as $row) {
-            fputcsv($output, $row);
+            $orderedRow = [];
+            foreach ($headers as $h) {
+                $key = $map[$h] ?? $h;
+                $orderedRow[] = $row[$key] ?? '';
+            }
+            fputcsv($output, $orderedRow);
         }
     } else {
         fputcsv($output, ['Nenhum dado encontrado']);
@@ -133,7 +177,6 @@ if ($format === 'csv') {
     exit();
 }
 
-// Gerar o PDF
 if ($format === 'pdf') {
     $pdf = new PDF();
     $pdf->title = $titles[$reportType] ?? 'Relatório';
@@ -144,28 +187,60 @@ if ($format === 'pdf') {
     $pdf->AliasNbPages();
     $pdf->AddPage();
 
-    if (!empty($data)) {
-        $headers = array_keys($data[0]);
-        $columnCount = count($headers);
-        
-        $pageWidth = $pdf->GetPageWidth() - 20; 
-        $columnWidth = $pageWidth / $columnCount;
+    // Mês selecionado
+    if ($month && isset($meses[$month])) {
+        $pdf->SetFont('Arial', 'I', 11);
+        $pdf->Cell(0, 10, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', "Mês: " . $meses[$month]), 0, 1, 'C');
+        $pdf->Ln(2);
+    }
 
-        // Cabeçalho da tabela com fundo cinza
-        $pdf->SetFillColor(220, 220, 220);
-        $pdf->SetFont('Arial', 'B', 12);
-        foreach ($headers as $header) {
-            $pdf->Cell($columnWidth, 10, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $header), 1, 0, 'C', true);
+    $headers = $headersCustom[$reportType] ?? array_keys($data[0] ?? []);
+    $columnCount = count($headers);
+    $pageWidth = $pdf->GetPageWidth() - 20;
+
+    // Calcular larguras automáticas
+    $maxWidths = array_fill(0, $columnCount, 0);
+    $pdf->SetFont('Arial', 'B', 12);
+    foreach ($headers as $i => $header) {
+        $w = $pdf->GetStringWidth($header) + 8;
+        $maxWidths[$i] = max($maxWidths[$i], $w);
+    }
+    $pdf->SetFont('Arial', '', 10);
+    foreach ($data as $row) {
+        foreach ($headers as $i => $h) {
+            $key = $map[$h] ?? $h;
+            $value = isset($row[$key]) ? $row[$key] : '';
+            $w = $pdf->GetStringWidth($value) + 8;
+            $maxWidths[$i] = max($maxWidths[$i], $w);
         }
-        $pdf->Ln();
+    }
+    // Ajustar para não ultrapassar a página
+    $totalWidth = array_sum($maxWidths);
+    if ($totalWidth > $pageWidth) {
+        $factor = $pageWidth / $totalWidth;
+        foreach ($maxWidths as $i => $w) {
+            $maxWidths[$i] = $w * $factor;
+        }
+    }
 
-        // Dados da tabela
-        $pdf->SetFont('Arial', '', 10);
-        $fill = false;
+    // Cabeçalhos
+    $pdf->SetFillColor(220, 220, 220);
+    $pdf->SetFont('Arial', 'B', 12);
+    foreach ($headers as $i => $header) {
+        $pdf->Cell($maxWidths[$i], 10, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $header), 1, 0, 'C', true);
+    }
+    $pdf->Ln();
+
+    // Dados
+    $pdf->SetFont('Arial', '', 10);
+    $fill = false;
+    if (!empty($data)) {
         foreach ($data as $row) {
-            foreach ($row as $cell) {
-                $pdf->SetFillColor($fill ? 235 : 255, $fill ? 235 : 255, $fill ? 235 : 255);
-                $pdf->Cell($columnWidth, 10, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', strval($cell)), 1, 0, 'L', true);
+            foreach ($headers as $i => $h) {
+                $key = $map[$h] ?? $h;
+                $value = isset($row[$key]) ? $row[$key] : '';
+                $pdf->SetFillColor($fill ? 245 : 255, $fill ? 245 : 255, $fill ? 245 : 255);
+                $pdf->Cell($maxWidths[$i], 8, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', strval($value)), 1, 0, 'L', true);
             }
             $pdf->Ln();
             $fill = !$fill;

@@ -1,5 +1,82 @@
-body { background-color: white; }
-table { background-color: gray; }
-h1 { color: black; font-size: 25pt; text-align: left; }
-h2 { color: black; font-size: 9pt; text-align: left; }
-h3 { color: black; text-align: right; }
+.encomendas-title { color: black; font-size: 25pt; text-align: left; }
+.submit-btn {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-block;
+}
+.submit-btn:hover {
+    background: #217dbb;
+    color: #fff;
+}
+
+/* Modal overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal content */
+.popup-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(44,62,80,0.12);
+    text-align: center;
+    min-width: 320px;
+    max-width: 90vw;
+}
+
+.popup-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    color: #34495e;
+}
+
+.popup-content p {
+    margin-bottom: 24px;
+    color: #555;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.popup-btn {
+    padding: 8px 22px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.yes-btn {
+    background: #27ae60;
+    color: #fff;
+}
+.yes-btn:hover {
+    background: #219150;
+}
+
+.no-btn {
+    background: #c0392b;
+    color: #fff;
+}
+.no-btn:hover {
+    background: #922b1e;
+}
