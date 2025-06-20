@@ -74,26 +74,36 @@ $headersCustom = [
     'users'  => ['ID', 'Nome', 'Email', 'Perfil', 'Criado em']
 ];
 
-$map = [
-    // Stock
+$mapStock = [
     'ID' => 'ID',
     'Produto' => 'Produto',
     'Quantidade' => 'Quantidade',
-    'Data de Atualização' => 'Data_Atualização',
-    // Orders
+    'Data de Atualização' => 'Data_Atualização'
+];
+$mapOrders = [
     'ID' => 'id',
     'Empresa' => 'company_name',
     'Utilizador' => 'user_id',
     'Data de Entrega' => 'delivery_date',
     'Estado' => 'status',
     'Quantidade' => 'quantity',
-    'Tipo' => 'Tipo',
-    // Users
+    'Tipo' => 'Tipo'
+];
+$mapUsers = [
+    'ID' => 'id',
     'Nome' => 'name',
     'Email' => 'email',
     'Perfil' => 'role',
     'Criado em' => 'created_at'
 ];
+
+if ($reportType === 'stock') {
+    $mapActive = $mapStock;
+} elseif ($reportType === 'orders') {
+    $mapActive = $mapOrders;
+} else {
+    $mapActive = $mapUsers;
+}
 
 function fetchData($db, $reportType, $month)
 {
@@ -164,7 +174,7 @@ if ($format === 'csv') {
         foreach ($data as $row) {
             $orderedRow = [];
             foreach ($headers as $h) {
-                $key = $map[$h] ?? $h;
+                $key = $mapActive[$h] ?? $h;
                 $orderedRow[] = $row[$key] ?? '';
             }
             fputcsv($output, $orderedRow);
@@ -208,7 +218,7 @@ if ($format === 'pdf') {
     $pdf->SetFont('Arial', '', 10);
     foreach ($data as $row) {
         foreach ($headers as $i => $h) {
-            $key = $map[$h] ?? $h;
+            $key = $mapActive[$h] ?? $h;
             $value = isset($row[$key]) ? $row[$key] : '';
             $w = $pdf->GetStringWidth($value) + 8;
             $maxWidths[$i] = max($maxWidths[$i], $w);
@@ -237,7 +247,7 @@ if ($format === 'pdf') {
     if (!empty($data)) {
         foreach ($data as $row) {
             foreach ($headers as $i => $h) {
-                $key = $map[$h] ?? $h;
+                $key = $mapActive[$h] ?? $h;
                 $value = isset($row[$key]) ? $row[$key] : '';
                 $pdf->SetFillColor($fill ? 245 : 255, $fill ? 245 : 255, $fill ? 245 : 255);
                 $pdf->Cell($maxWidths[$i], 8, iconv('UTF-8', 'ISO-8859-1//TRANSLIT', strval($value)), 1, 0, 'L', true);
