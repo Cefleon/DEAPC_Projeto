@@ -13,7 +13,19 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
     $entregas[] = $row;
 }
 
+// Contar "entregas de hoje"
+$hoje = date('Y-m-d');
+$stmtHoje = $db->prepare("SELECT COUNT(*) as total FROM deliveries WHERE delivery_date = :hoje");
+$stmtHoje->bindValue(':hoje', $hoje, SQLITE3_TEXT);
+$entregas_hoje = $stmtHoje->execute()->fetchArray(SQLITE3_ASSOC)['total'] ?? 0;
 
+// Contar "entregas em progresso"
+$stmtProg = $db->query("SELECT COUNT(*) as total FROM deliveries WHERE status = 'in_progress'");
+$em_progresso = $stmtProg->fetchArray(SQLITE3_ASSOC)['total'] ?? 0;
+
+// Contar "entregas concluídas"
+$stmtConc = $db->query("SELECT COUNT(*) as total FROM deliveries WHERE status = 'completed'");
+$concluidas = $stmtConc->fetchArray(SQLITE3_ASSOC)['total'] ?? 0;
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +54,7 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
                     <h3>Entregas Hoje</h3>
                     <i class="fas fa-truck"></i>
                 </div>
-                <div class="card-value">24</div>
+                <div class="card-value"><?php echo $entregas_hoje; ?></div>
             </div>
 
             <div class="card">
@@ -50,7 +62,7 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
                     <h3>Em Progresso</h3>
                     <i class="fas fa-spinner"></i>
                 </div>
-                <div class="card-value">8</div>
+                <div class="card-value"><?php echo $em_progresso; ?></div>
             </div>
 
             <div class="card">
@@ -58,7 +70,7 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
                     <h3>Concluídas</h3>
                     <i class="fas fa-check"></i>
                 </div>
-                <div class="card-value">16</div>
+                <div class="card-value"><?php echo $concluidas; ?></div>
             </div>
         </div>
 

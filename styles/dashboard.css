@@ -573,3 +573,61 @@ tr:hover {
     background: #922b1e;
     color: #fff !important;
 }
+
+.metric-bar-container {
+    background: #f0f0f0;
+    border-radius: 6px;
+    height: 22px;
+    width: 100%;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.metric-bar {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s;
+}
+.metric-bar.total { background: #3498db; }
+.metric-bar.critico { background: #e67e22; }
+.metric-bar.zero { background: #e74c3c; }
+.metric-label {
+    font-size: 0.95em;
+    margin-bottom: 2px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.barras-stock {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+}
+.barra-produto {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.barra-label {
+    flex: 0 0 180px; /* largura fixa para todos os nomes */
+    margin-right: 10px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.97em;
+}
+.barra-valor {
+    height: 22px;
+    border-radius: 5px;
+    background: #3498db;
+    transition: width 0.5s;
+    min-width: 2px;
+    max-width: 100%;
+}
+.barra-num {
+    margin-left: 10px;
+    font-size: 0.95em;
+    color: #333;
+    width: 40px;
+    text-align: left;
+}

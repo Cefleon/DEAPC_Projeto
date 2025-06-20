@@ -42,16 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $db->exec('BEGIN');
 
-            $stmt = $db->prepare("INSERT INTO deliveries (company_name, user_id, delivery_date, status) VALUES (:company, :user_id, :delivery_date, 'completed')");
+            $stmt = $db->prepare("INSERT INTO deliveries (company_name, user_id, delivery_date, Tipo, status) VALUES (:company, :user_id, :delivery_date, :type, 'completed')");
             $stmt->bindValue(':company', $company, SQLITE3_TEXT);
             $stmt->bindValue(':user_id', $user_id, SQLITE3_INTEGER);
             $stmt->bindValue(':delivery_date', $products[0]['date'], SQLITE3_TEXT);
+            $stmt->bindValue(':type', $products[0]['type'], SQLITE3_TEXT);
             $stmt->execute();
 
             $delivery_id = $db->lastInsertRowID();
 
             foreach ($products as $prod) {
-                // Exemplo: inserir na tabela delivery_products (ajuste conforme sua estrutura)
                 $stmtProd = $db->prepare("INSERT INTO delivery_products (delivery_id, product_name, product_type, quantity, delivery_date) VALUES (:delivery_id, :product, :type, :quantity, :date)");
                 $stmtProd->bindValue(':delivery_id', $delivery_id, SQLITE3_INTEGER);
                 $stmtProd->bindValue(':product', $prod['name'], SQLITE3_TEXT);
@@ -62,10 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $db->exec('COMMIT');
-            $success_message = "Entrega para $company registrada com sucesso!";
+            $success_message = "Entrega para a companhia $company registada com sucesso!";
         } catch (Exception $e) {
             $db->exec('ROLLBACK');
-            $error_message = "Erro ao registrar entrega: " . $e->getMessage();
+            $error_message = "Erro ao registar entrega: " . $e->getMessage();
         }
     } else {
         $error_message = "Por favor, preencha todos os campos obrigatórios.";
@@ -85,6 +85,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
+<style>
+    .products-table tbody {
+        display: block;
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    .products-table table thead,
+    .products-table table tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+</style>
 
 <body>
     <div class="dashboard-container">
@@ -159,6 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </main>
     </div>
+
+
+    <script type="text/javascript" src="scripts/concluirentrega.js"></script>
 </body>
 
 </html>
